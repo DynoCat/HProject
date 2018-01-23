@@ -19,8 +19,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.vision.text.Text;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ActivityResultReceiver.Receiver {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener //, ActivityResultReceiver.Receiver
+{
 
+    private static final String TAG = "Main Activity - ";
     public GoogleApiClient mApiClient;
     public ActivityResultReceiver mReceiver;
 
@@ -51,85 +53,74 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         inVehicleProbabilityTextView = (TextView) findViewById(R.id.inVehicleProbabilityTextView);
         unknownActivityProbabilityTextView = (TextView) findViewById(R.id.unknownActivityProbabilityTextView);
 
-//        mReceiver = new ActivityResultReceiver(new Handler());
-//        mReceiver.setReceiver(this);
         mApiClient = new GoogleApiClient.Builder(MainActivity.this)
                 .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(MainActivity.this)
                 .addOnConnectionFailedListener(MainActivity.this)
                 .build();
         mApiClient.connect();
-
-
-        //mReceiver.setReceiver(this);
     }
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
         Intent intent = new Intent(MainActivity.this, ActivityRecognitionService.class);
-//        intent.putExtra("receiverTag", mReceiver);
-//        intent.putExtra("nameTag", "MainActivity");
         PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 3000, pendingIntent);
-        //Intent aIntent = getIntent();
-//        String still = aIntent.getStringExtra("STILL");
-//        String tilting = aIntent.getStringExtra("TILTING");
-//        String onFoot = aIntent.getStringExtra("ON_FOOT");
-//        String running = aIntent.getStringExtra("RUNNING");
-//        String walking = aIntent.getStringExtra("WALKING");
-//        String onBicycle = aIntent.getStringExtra("ON_BICYCLE");
-//        String inVehicle = aIntent.getStringExtra("IN_VEHICLE");
-//        String unknown = aIntent.getStringExtra("UNKNOWN");
-
+        Log.d(TAG, "onConnected()");
         SharedPreferences aSharedPreference = getSharedPreferences("activity_data", Context.MODE_PRIVATE);
-        stillProbabilityTextView.setText(aSharedPreference.getString("still", ""));
-        tiltingProbabilityTextView.setText(aSharedPreference.getString("tilting", ""));
-        onFootProbabilityTextView.setText(aSharedPreference.getString("on_foot", ""));
-        runningProbabilityTextView.setText(aSharedPreference.getString("running", ""));
-        walkingProbabilityTextView.setText(aSharedPreference.getString("walking", ""));
-        onBicycleProbabilityTextView.setText(aSharedPreference.getString("on_bicycle", ""));
-        inVehicleProbabilityTextView.setText(aSharedPreference.getString("in_vehicle", ""));
-        unknownActivityProbabilityTextView.setText(aSharedPreference.getString("unknown", ""));
+        stillProbabilityTextView.setText("Still: " + aSharedPreference.getString("still", ""));
+        tiltingProbabilityTextView.setText("Tilting: " + aSharedPreference.getString("tilting", ""));
+        onFootProbabilityTextView.setText("On foot: " + aSharedPreference.getString("on_foot", ""));
+        runningProbabilityTextView.setText("Running: " + aSharedPreference.getString("running", ""));
+        walkingProbabilityTextView.setText("Walking: " + aSharedPreference.getString("walking", ""));
+        onBicycleProbabilityTextView.setText("On bicycle: " + aSharedPreference.getString("on_bicycle", ""));
+        inVehicleProbabilityTextView.setText("In vehicle: " + aSharedPreference.getString("in_vehicle", ""));
+        unknownActivityProbabilityTextView.setText("Unknown: " + aSharedPreference.getString("unknown", ""));
 
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.d(TAG, " - Connection failed (onConnectionFailed()");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d(TAG, " - onConnectionSuspended");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart()");
     }
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, " onDestroy()");
         super.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, " onResume()");
     }
 
     @Override
     protected void onPause() {
+        Log.d(TAG, " onPause()");
         super.onPause();
     }
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Log.d("googleapi_prototype", " received result from ActivityRecognitionService= " + resultData.getString("ServiceTag"));
-    }
+//    @Override
+//    public void onReceiveResult(int resultCode, Bundle resultData) {
+//        Log.d("googleapi_prototype", " received result from ActivityRecognitionService= " + resultData.getString("ServiceTag"));
+//    }
 }
