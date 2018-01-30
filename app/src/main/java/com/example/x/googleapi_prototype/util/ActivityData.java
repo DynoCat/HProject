@@ -1,5 +1,8 @@
 package com.example.x.googleapi_prototype.util;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.io.Serializable;
 
@@ -10,33 +13,65 @@ import com.google.android.gms.location.DetectedActivity;
  * Created by x on 20/01/18.
  */
 
-public class ActivityData implements Serializable {
+public class ActivityData implements Parcelable {
 
     private long mTimeStamp;
 
     private int mActivityConfidence;
 
-    private int mActivityType;
+    private int mIntActivityType;
+
+    private String mStringActivityType;
+
+    private String mFormattedTimeStamp;
 
     public ActivityData(ActivityRecognitionResult pResult, DetectedActivity pActivity) {
         this.mTimeStamp = pResult.getTime();
-        this.mActivityType = pActivity.getType();
+        this.mIntActivityType = pActivity.getType();
         this.mActivityConfidence = pActivity.getConfidence();
+        this.mStringActivityType = intActivityTypeToString(pActivity.getType());
+        this.mFormattedTimeStamp = epochToFormattedTimestamp(this.mTimeStamp);
     }
 
+    public ActivityData(Parcel pParcel) {
+        this.mTimeStamp = pParcel.readLong();
+        this.mIntActivityType = pParcel.readInt();
+        this.mActivityConfidence = pParcel.readInt();
+        this.mStringActivityType = pParcel.readString();
+        this.mFormattedTimeStamp = pParcel.readString();
+
+    }
+
+    public static final Creator<ActivityData> CREATOR = new Creator<ActivityData>() {
+        @Override
+        public ActivityData createFromParcel(Parcel in) {
+            return new ActivityData(in);
+        }
+
+        @Override
+        public ActivityData[] newArray(int size) {
+            return new ActivityData[size];
+        }
+    };
+
     public String toString() {
-        SimpleDateFormat aDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
-        String aDateTime = aDateFormat.format(mTimeStamp);
         return new StringBuffer("DateTimeEpoch: ")
                 .append(this.mTimeStamp)
                 .append(" DateTimeFormatted: ")
-                .append(aDateTime)
+                .append(epochToFormattedTimestamp(this.mTimeStamp))
                 .append(" activityID: ")
-                .append(this.mActivityType)
+                .append(this.mIntActivityType)
                 .append(" activityType: ")
-                .append(intActivityTypeToString(this.mActivityType))
+                .append(this.mStringActivityType)
                 .append(" activityConfidence:")
                 .append(this.mActivityConfidence).toString();
+    }
+
+    private String epochToFormattedTimestamp(long pEpoch){
+        SimpleDateFormat aDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+        String aDateTime = aDateFormat.format(pEpoch);
+
+        return aDateTime;
     }
 
     private String intActivityTypeToString(int mActivityType) {
@@ -77,11 +112,41 @@ public class ActivityData implements Serializable {
         this.mActivityConfidence = mActivityConfidence;
     }
 
-    public int getActivityType() {
-        return mActivityType;
+    public int getIntActivityType() {
+        return mIntActivityType;
     }
 
-    public void setActivityType(int mActivityType) {
-        this.mActivityType = mActivityType;
+    public void setIntActivityType(int mActivityType) {
+        this.mIntActivityType = mActivityType;
+    }
+
+    public String getmStringActivityType() {
+        return mStringActivityType;
+    }
+
+    public void setmStringActivityType(String mStringActivityType) {
+        this.mStringActivityType = mStringActivityType;
+    }
+
+    public String getFormattedTimeStamp() {
+        return mFormattedTimeStamp;
+    }
+
+    public void setFormattedTimeStamp(String mFormattedTimeStamp) {
+        this.mFormattedTimeStamp = mFormattedTimeStamp;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel pDest, int pFlags) {
+        pDest.writeLong(mTimeStamp);
+        pDest.writeInt(mIntActivityType);
+        pDest.writeInt(mActivityConfidence);
+        pDest.writeString(mStringActivityType);
+        pDest.writeString(mFormattedTimeStamp);
     }
 }
