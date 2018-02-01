@@ -60,7 +60,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.TILTING:
                     Log.d(TAG, "handleDetectedActivity: TILTING" + aActivity.getConfidence());
@@ -68,7 +68,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.ON_FOOT:
                     Log.d(TAG, "handleDetectedActivity: ON_FOOT" + aActivity.getConfidence());
@@ -76,7 +76,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.RUNNING:
                     Log.d(TAG, "handleDetectedActivity: RUNNING" + aActivity.getConfidence());
@@ -84,7 +84,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.WALKING:
                     Log.d(TAG, "handleDetectedActivity: WALKING" + aActivity.getConfidence());
@@ -92,7 +92,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.ON_BICYCLE:
                     Log.d(TAG, "handleDetectedActivity: ON_BICYCLE" + aActivity.getConfidence());
@@ -100,7 +100,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.IN_VEHICLE:
                     Log.d(TAG, "handleDetectedActivity: IN_VEHICLE" + aActivity.getConfidence());
@@ -108,7 +108,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
                 case DetectedActivity.UNKNOWN:
                     Log.d(TAG, "handleDetectedActivity: UNKNOWN" + aActivity.getConfidence());
@@ -116,7 +116,7 @@ public class ActivityRecognitionService extends IntentService {
 
                     aData = new ActivityData(pResult, aActivity);
                     mActivityDataList.add(aData);
-                    Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
+                    //Log.d(TAG, "Case: STILL toString: " + mActivityDataList.get(mActivityDataList.indexOf(aData)).toString());
                     break;
             }
             aEditor.apply();

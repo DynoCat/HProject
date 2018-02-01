@@ -25,6 +25,14 @@ public class ActivityData implements Parcelable {
 
     private String mFormattedTimeStamp;
 
+    public ActivityData() {}
+
+    public ActivityData(int pActivityConfidence, int pActivityType, String pStringType) {
+        this.mIntActivityType = pActivityType;
+        this.mActivityConfidence = pActivityConfidence;
+        this.mStringActivityType = pStringType;
+    }
+
     public ActivityData(ActivityRecognitionResult pResult, DetectedActivity pActivity) {
         this.mTimeStamp = pResult.getTime();
         this.mIntActivityType = pActivity.getType();
@@ -120,11 +128,11 @@ public class ActivityData implements Parcelable {
         this.mIntActivityType = mActivityType;
     }
 
-    public String getmStringActivityType() {
+    public String getStringActivityType() {
         return mStringActivityType;
     }
 
-    public void setmStringActivityType(String mStringActivityType) {
+    public void setStringActivityType(String mStringActivityType) {
         this.mStringActivityType = mStringActivityType;
     }
 
