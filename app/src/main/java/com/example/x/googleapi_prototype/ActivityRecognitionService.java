@@ -121,6 +121,7 @@ public class ActivityRecognitionService extends IntentService {
             }
             aEditor.apply();
         }
+        Log.d(TAG, "Size: " + mActivityDataList.size());
         saveActivityDataToFile(mActivityDataList);
 
         Bundle aBundle = pIntent.getExtras();
