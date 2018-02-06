@@ -1,8 +1,11 @@
 package com.example.x.googleapi_prototype;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
@@ -78,20 +81,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 ArrayList<ActivityData> aActivityDataList = reply.getParcelableArrayList("data_array"); //2
                 Log.d(TAG, "Size: " + aActivityDataList.size());
 
-                if(mPreviousActivity == -1) {
+                if (mPreviousActivity == -1) {
                     mPreviousActivityObject = aActivityDataList.get(0); //1
                     mPreviousActivity = aActivityDataList.get(0).getIntActivityType(); //1
                 }
 
-                if(mPreviousActivity == aActivityDataList.get(0).getIntActivityType()) {
+                if (mPreviousActivity == aActivityDataList.get(0).getIntActivityType()) {
                     mActivityStartTime = mPreviousActivityObject.getFormattedTimeStamp();
                     mActivityEndTime = aActivityDataList.get(0).getFormattedTimeStamp();
                     String aCurrentElapsedTime = getElapsedActivityTime(mActivityStartTime,
-                                                                        mActivityEndTime,
-                                                                        mPreviousActivityObject);
-                    Toast.makeText(MainActivity.this, aCurrentElapsedTime, Toast.LENGTH_SHORT).show();
+                            mActivityEndTime,
+                            mPreviousActivityObject);
+                    //Toast.makeText(MainActivity.this, aCurrentElapsedTime, Toast.LENGTH_SHORT).show();
+                    notifyElapsedTime(aCurrentElapsedTime);
+
                 } else {
-                    switch(aActivityDataList.get(0).getIntActivityType()) {
+                    switch (aActivityDataList.get(0).getIntActivityType()) {
                         case ActivityConstants.ACTIVITY_IN_VEHICLE:
                             mImageView.setImageResource(R.drawable.in_vehicle);
                             break;
@@ -125,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         };
     }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -151,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         String c = pActivityList.get(0).getStringActivityType();
         Log.d(TAG, " " + aHighestConfidence + "  " + c);
         ActivityData aMostProbableActivity = pActivityList.get(0);
-        for(int aIndex = 1; aIndex < pActivityList.size() - 1; aIndex++) {
-            if(pActivityList.get(aIndex).getActivityConfidence() > aHighestConfidence) {
+        for (int aIndex = 1; aIndex < pActivityList.size() - 1; aIndex++) {
+            if (pActivityList.get(aIndex).getActivityConfidence() > aHighestConfidence) {
                 aMostProbableActivity = pActivityList.get(aIndex);
             }
         }
@@ -190,21 +196,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             long aDiffHours = aDiff / (60 * 60 * 1000) % 24;
             long aDiffDays = aDiff / (24 * 60 * 60 * 1000);
 
-            if(aDiffDays == 0 && aDiffHours == 0 && aDiffMinutes == 0) {
+            if (aDiffDays == 0 && aDiffHours == 0 && aDiffMinutes == 0) {
                 aFinalElapsedTime = Long.toString(aDiffSeconds) + " seconds.";
-            }
-            else if(aDiffDays == 0 && aDiffHours == 0) {
+            } else if (aDiffDays == 0 && aDiffHours == 0) {
                 aFinalElapsedTime = Long.toString(aDiffMinutes)
                         + " minute(s) and " + Long.toString(aDiffSeconds)
                         + " second(s).";
-            }
-            else if(aDiffDays == 0) {
+            } else if (aDiffDays == 0) {
                 aFinalElapsedTime = Long.toString(aDiffHours)
                         + " hour(s), " + Long.toString(aDiffMinutes)
                         + " minute(s), and " + Long.toString(aDiffSeconds)
                         + " second(s).";
-            }
-            else {
+            } else {
                 aFinalElapsedTime = Long.toString(aDiffDays)
                         + " day(s), " + Long.toString(aDiffHours)
                         + " hour(s), " + Long.toString(aDiffMinutes)
@@ -218,5 +221,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return new StringBuffer("You have been ")
                 .append(pActivityObject.getStringActivityType())
                 .append(" for ").append(aFinalElapsedTime).toString();
+    }
+
+    public void notifyElapsedTime(String pMessage) {
+        NotificationManager aNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent aIntent = new Intent(this, MainActivity.class);
+        PendingIntent aPendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), aIntent, 0);
+        Notification aNotification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("ActivityRecogniser")
+                .setContentText(pMessage)
+                .setContentIntent(aPendingIntent).build();
+        aNM.notify(0, aNotification);
     }
 }
