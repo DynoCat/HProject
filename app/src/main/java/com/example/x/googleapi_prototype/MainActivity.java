@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.hardware.*;
+
 import com.example.x.googleapi_prototype.util.ActivityConstants;
 import com.example.x.googleapi_prototype.util.ActivityData;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,13 +30,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener //, ActivityResultReceiver.Receiver
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, SensorEventListener //, ActivityResultReceiver.Receiver
 {
 
     private static final String TAG = "Main Activity - ";
 
     public GoogleApiClient mApiClient;
     private Handler mGUIHandler;
+
+    private SensorManager mSensorManager;
+    boolean mActivityRunning;
 
     private String mActivityStartTime = null;
     private String mActivityEndTime = null;
@@ -73,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(MainActivity.this)
                 .build();
         mApiClient.connect();
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         mGUIHandler = new Handler() {
             @Override
@@ -170,12 +178,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onResume() {
         super.onResume();
         Log.d(TAG, " onResume()");
+
+        mActivityRunning = true;
+        Sensor aCountSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if(aCountSensor != null) {
+            mSensorManager.registerListener(this, aCountSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Pedometer not available.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onPause() {
         Log.d(TAG, " onPause()");
         super.onPause();
+        mActivityRunning = false;
     }
 
     public String getElapsedActivityTime(String pActivityStartTime, String pActivityEndTime, ActivityData pActivityObject) {
@@ -232,5 +249,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setContentText(pMessage)
                 .setContentIntent(aPendingIntent).build();
         aNM.notify(0, aNotification);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (mActivityRunning) {
+            stillProbabilityTextView.setText(String.valueOf(sensorEvent.values[0]));
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }
