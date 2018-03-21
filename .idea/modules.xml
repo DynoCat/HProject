@@ -3,9 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://C:\Users\X\AndroidStudioProjects\HProject\GoogleAPI_Prototype.iml" filepath="C:\Users\X\AndroidStudioProjects\HProject\GoogleAPI_Prototype.iml" />
+      <module fileurl="file://C:\Users\X\AndroidStudioProjects\HProject\app\app.iml" filepath="C:\Users\X\AndroidStudioProjects\HProject\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GoogleAPI_Prototype.iml" filepath="$PROJECT_DIR$/GoogleAPI_Prototype.iml" />
       <module fileurl="file://$PROJECT_DIR$/HProject.iml" filepath="$PROJECT_DIR$/HProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\X\AndroidStudioProjects\HProject\app\app.iml" filepath="C:\Users\X\AndroidStudioProjects\HProject\app\app.iml" />
     </modules>
   </component>
 </project>

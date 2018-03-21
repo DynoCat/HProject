@@ -1,12 +1,11 @@
 package com.example.x.googleapi_prototype;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
@@ -16,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +47,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private int mPreviousActivity = -1;
     private ActivityData mPreviousActivityObject;
 
+    private TextView mProgress;
+    private ProgressBar mProgressBar;
+    private int mPedometerStatus = 0;
+    private Handler mProgressHandler = new Handler();
+
+
     /*
         WRITE ABOUT BROADCAST RECEIVER VS RESULT REC. IN FAVOUR OF RESULT REC - Result rec. is used when only our own (1) application needs the data
         whereas broadcast receiver can pass to multiple apps.
@@ -73,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         unknownActivityProbabilityTextView = (TextView) findViewById(R.id.unknownActivityProbabilityTextView);
         mImageView = (ImageView) findViewById(R.id.mImageView);
 
+        mProgress = (TextView) findViewById(R.id.mProgress);
+        mProgressBar = (ProgressBar) findViewById(R.id.mProgressBar);
+
         mApiClient = new GoogleApiClient.Builder(MainActivity.this)
                 .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(MainActivity.this)
@@ -85,6 +94,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mGUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+                if(mPedometerStatus <= 100) {
+                    mGUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences aSharedPref = getSharedPreferences("pedometer_data", Context.MODE_PRIVATE);
+                            int aPercent = (aSharedPref.getInt("pedometer_count", 0) * 100) / 6000;
+                            mProgressBar.setProgress(aPercent);
+                            mProgress.setText(Integer.toString(aPercent)+ "%");
+                            mPedometerStatus = aPercent;
+                            Log.d(TAG, "HANDLER - PEDOMETER COUNT: " + aSharedPref.getInt("pedometer_count", 0));
+                        }
+                    });
+                } else {
+                    mProgress.setText("You have reached your daily objective.");
+                }
                 Bundle reply = msg.getData();
                 ArrayList<ActivityData> aActivityDataList = reply.getParcelableArrayList("data_array"); //2
                 Log.d(TAG, "Size: " + aActivityDataList.size());
@@ -254,7 +278,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (mActivityRunning) {
-            stillProbabilityTextView.setText(String.valueOf(sensorEvent.values[0]));
+            SharedPreferences aSharedPref = getSharedPreferences("pedometer_data", Context.MODE_PRIVATE);
+            SharedPreferences.Editor aEditor = aSharedPref.edit();
+            aEditor.putInt("pedometer_count", (int) sensorEvent.values[0]);
+            aEditor.apply();
+            Log.d(TAG, "PEDOMETER COUNT: " + sensorEvent.values[0]);
+            //stillProbabilityTextView.setText(String.valueOf(sensorEvent.values[0]));
         }
     }
 
