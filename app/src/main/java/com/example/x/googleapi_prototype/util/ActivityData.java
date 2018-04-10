@@ -2,10 +2,7 @@ package com.example.x.googleapi_prototype.util;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.text.SimpleDateFormat;
-import java.io.Serializable;
-
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
@@ -63,16 +60,12 @@ public class ActivityData implements Parcelable {
     };
 
     public String toString() {
-        return new StringBuffer("DateTimeEpoch: ")
-                .append(this.mTimeStamp)
-                .append(" DateTimeFormatted: ")
-                .append(epochToFormattedTimestamp(this.mTimeStamp))
-                .append(" activityID: ")
-                .append(this.mIntActivityType)
-                .append(" activityType: ")
+        return new StringBuffer(epochToFormattedTimestamp(this.mTimeStamp))
+                .append("\n")
                 .append(this.mStringActivityType)
-                .append(" activityConfidence:")
-                .append(this.mActivityConfidence).toString();
+                .append("\n")
+                .append(this.mActivityConfidence)
+                .append("\n\n").toString();
     }
 
     private String epochToFormattedTimestamp(long pEpoch){
