@@ -1,78 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="30sp"
+    android:background="@color/beige"
     tools:context="com.example.x.googleapi_prototype.MainActivity"
     android:weightSum="1">
+
     <ProgressBar
         android:id="@+id/mProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_centerInParent="true"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:indeterminate="false"
         android:max="100"
-        android:progress="0"
+        android:progress="50"
+        android:layout_alignParentTop="true"
         android:progressDrawable="@drawable/pedometer_progressbar_drawable"
-        android:secondaryProgress="0" />
-
+        android:secondaryProgress="100" />
 
     <TextView
         android:id="@+id/mProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/progressBar"
-        android:layout_centerInParent="true"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/stillProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tiltingProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/onFootProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/runningProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/walkingProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/onBicycleProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/inVehicleProbabilityTextView"
-        android:layout_marginTop="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/unknownActivityProbabilityTextView"
-        android:layout_marginTop="30dp"/>
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:gravity="center"
+        android:text="25%"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/salmon_pink"
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/mImageView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/presence_online"
-        android:layout_weight="0.22" />
-</LinearLayout>
+        app:srcCompat="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/txtStepStatus1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="You have completed "
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/txtStatus2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="of your daily step count!"
+        android:textSize="18sp"
+        android:layout_below="@+id/mProgressBar"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/txtStepsOutOf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="casual"
+        android:text="/ 6000"
+        android:textSize="30sp"
+        android:layout_alignBaseline="@+id/mProgress"
+        android:layout_alignBottom="@+id/mProgress"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/txtNotifyElapsedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="casual"
+        android:text="You have been _ for _, keep it up!"
+        android:textSize="18sp"
+        android:layout_alignTop="@+id/mImageView"
+        android:layout_toEndOf="@+id/mImageView"
+        android:layout_marginStart="18dp" />
+
+</RelativeLayout>

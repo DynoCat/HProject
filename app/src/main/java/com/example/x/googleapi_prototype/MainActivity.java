@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private int mPreviousActivity = -1;
     private ActivityData mPreviousActivityObject;
 
-    private TextView mProgress;
+    private TextView mProgress, mStepCount, mNotifyElapsedTime;
+    private ImageView mImageView;
     private ProgressBar mProgressBar;
     private int mPedometerStatus = 0;
     private Handler mProgressHandler = new Handler();
@@ -58,28 +59,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         whereas broadcast receiver can pass to multiple apps.
      */
 
-    TextView stillProbabilityTextView, tiltingProbabilityTextView,
-            onFootProbabilityTextView, runningProbabilityTextView,
-            walkingProbabilityTextView, onBicycleProbabilityTextView,
-            inVehicleProbabilityTextView, unknownActivityProbabilityTextView;
-
-    ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        stillProbabilityTextView = (TextView) findViewById(R.id.stillProbabilityTextView);
-        tiltingProbabilityTextView = (TextView) findViewById(R.id.tiltingProbabilityTextView);
-        onFootProbabilityTextView = (TextView) findViewById(R.id.onFootProbabilityTextView);
-        runningProbabilityTextView = (TextView) findViewById(R.id.runningProbabilityTextView);
-        walkingProbabilityTextView = (TextView) findViewById(R.id.walkingProbabilityTextView);
-        onBicycleProbabilityTextView = (TextView) findViewById(R.id.onBicycleProbabilityTextView);
-        inVehicleProbabilityTextView = (TextView) findViewById(R.id.inVehicleProbabilityTextView);
-        unknownActivityProbabilityTextView = (TextView) findViewById(R.id.unknownActivityProbabilityTextView);
+
         mImageView = (ImageView) findViewById(R.id.mImageView);
 
         mProgress = (TextView) findViewById(R.id.mProgress);
+        mStepCount = (TextView) findViewById(R.id.txtStepsOutOf);
+        mNotifyElapsedTime = (TextView) findViewById(R.id.txtNotifyElapsedTime);
         mProgressBar = (ProgressBar) findViewById(R.id.mProgressBar);
 
         mApiClient = new GoogleApiClient.Builder(MainActivity.this)
@@ -99,15 +89,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         @Override
                         public void run() {
                             SharedPreferences aSharedPref = getSharedPreferences("pedometer_data", Context.MODE_PRIVATE);
-                            int aPercent = (aSharedPref.getInt("pedometer_count", 0) * 100) / 6000;
+                            int aStepCount = aSharedPref.getInt("pedometer_count", 0);
+                            int aPercent = (aStepCount * 100) / 6000;
                             mProgressBar.setProgress(aPercent);
                             mProgress.setText(Integer.toString(aPercent)+ "%");
                             mPedometerStatus = aPercent;
+                            mStepCount.setText(aStepCount + " / 6000!");
                             Log.d(TAG, "HANDLER - PEDOMETER COUNT: " + aSharedPref.getInt("pedometer_count", 0));
                         }
                     });
                 } else {
-                    mProgress.setText("You have reached your daily objective.");
+                    mStepCount.setText("You have reached your daily objective! Keep it up, I know you can!");
                 }
                 Bundle reply = msg.getData();
                 ArrayList<ActivityData> aActivityDataList = reply.getParcelableArrayList("data_array"); //2
@@ -124,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     String aCurrentElapsedTime = getElapsedActivityTime(mActivityStartTime,
                             mActivityEndTime,
                             mPreviousActivityObject);
-                    //Toast.makeText(MainActivity.this, aCurrentElapsedTime, Toast.LENGTH_SHORT).show();
+                    mNotifyElapsedTime.setText(aCurrentElapsedTime);
                     notifyElapsedTime(aCurrentElapsedTime);
 
                 } else {
@@ -156,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         default:
                             mImageView.setImageDrawable(null);
                     }
-                    mPreviousActivity = aActivityDataList.get(0).getIntActivityType(); //2
+                    mPreviousActivity = aActivityDataList.get(0).getIntActivityType();
                     mPreviousActivityObject = aActivityDataList.get(0);
                 }
             }
@@ -170,17 +162,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         intent.putExtra("messenger", new Messenger(mGUIHandler));
         PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 3000, pendingIntent);
-        Log.d(TAG, "onConnected()");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, " - Connection failed (onConnectionFailed()");
+
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(TAG, "Connection suspended: retrying");
         mApiClient.connect();
     }
 
@@ -242,18 +232,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } else if (aDiffDays == 0 && aDiffHours == 0) {
                 aFinalElapsedTime = Long.toString(aDiffMinutes)
                         + " minute(s) and " + Long.toString(aDiffSeconds)
-                        + " second(s).";
+                        + " second(s)!";
             } else if (aDiffDays == 0) {
                 aFinalElapsedTime = Long.toString(aDiffHours)
                         + " hour(s), " + Long.toString(aDiffMinutes)
                         + " minute(s), and " + Long.toString(aDiffSeconds)
-                        + " second(s).";
+                        + " second(s)!";
             } else {
                 aFinalElapsedTime = Long.toString(aDiffDays)
                         + " day(s), " + Long.toString(aDiffHours)
                         + " hour(s), " + Long.toString(aDiffMinutes)
                         + " minute(s), and " + Long.toString(aDiffSeconds)
-                        + " second(s).";
+                        + " second(s)!";
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             aEditor.putInt("pedometer_count", (int) sensorEvent.values[0]);
             aEditor.apply();
             Log.d(TAG, "PEDOMETER COUNT: " + sensorEvent.values[0]);
-            //stillProbabilityTextView.setText(String.valueOf(sensorEvent.values[0]));
         }
     }
 
